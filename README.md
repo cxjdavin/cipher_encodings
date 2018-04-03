@@ -6,13 +6,19 @@ We first create CNF generators for "building block" functions (see `cnf_base.py`
 
   We use cryptominisat's Python wrapper to perform tests on the generated CNFs
 
+## File naming conventions
+* `cnf_base.py`: "Building block" functions
+* `<cipher>.py`: Cipher generating class
+* `test_<...>.py`: For unit testing
+* `<cipher>.tv`: Test vectors for cipher
+
 ## Usage
 * At the top of your script, add `from <cipher> import *`
 * `cipher = <cipher>(<params>)`
 * `next_free_variable, result = cipher.setup()`
 * `result.cnf` contains the CNF representing the cipher
-* `result.in_vars` contain the input variables (key and plaintext)
-* `result.out_vars` contain the output variables (ciphertext)
+* `result.in_vars` contain the input variables. By default, res.in_vars = [key vars, plaintext vars]
+* `result.out_vars` contain the output variables. By default, res.out_vars = [ciphertext vars]
 
 ### Examples (via cryptominisat)
 #### Importing FEAL
@@ -27,8 +33,8 @@ nfv, res = feal.setup()
 from pycryptosat import Solver
 s = Solver()
 s.add_clauses(res.cnf)
-<Extract key and plaintext variables from res.in_vars> (By default, res.in_vars = [key vars, plaintext vars])
-<Extract ciphertext variables from res.out_vars> (By default, res.out_vars = [ciphertext vars]
+<Extract key and plaintext variables from res.in_vars>
+<Extract ciphertext variables from res.out_vars>
 ass = <Assign T/F to variables in key and plaintext variables>
 sat, soln = s.solve(ass)
 <Read off T/F for ciphertext by looking at soln[variable]>
@@ -39,8 +45,8 @@ sat, soln = s.solve(ass)
 from pycryptosat import Solver
 s = Solver()
 s.add_clauses(res.cnf)
-<Extract key and plaintext variables from res.in_vars> (By default, res.in_vars = [key vars, plaintext vars])
-<Extract ciphertext variables from res.out_vars> (By default, res.out_vars = [ciphertext vars]
+<Extract key and plaintext variables from res.in_vars>
+<Extract ciphertext variables from res.out_vars>
 ass = <Assign T/F to variables in plaintext and ciphertext variables>
 sat, soln = s.solve(ass)
 <Read off T/F for key by looking at soln[variable]>
